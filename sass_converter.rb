@@ -14,6 +14,7 @@ module Jekyll
     end
 
     def matches(ext)
+      @ext = ext
       ext =~ /sass|scss/i
     end
 
@@ -23,10 +24,11 @@ module Jekyll
 
     def convert(content)
       setup
+      syntax = (@ext =~ /sass/i) ? :sass : :scss
       begin
-        Sass::Engine.new(content, :style => :compressed).render
+        Sass::Engine.new(content, :style => :compressed, :syntax => syntax).render
       rescue => e
-        puts "Sass Exception: #{e.message}"
+        puts "Sass Exception (#{e.sass_line}): #{e.message}"
       end
     end
   end
